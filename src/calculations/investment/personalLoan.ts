@@ -6,6 +6,7 @@
  * @returns The monthly personal loan payment.
  * @throws Error if any parameter is invalid.
  */
+
 export function calculatePersonalLoanMonthlyPayment(
   principal: number,
   annualRate: number,
@@ -35,6 +36,7 @@ export function calculatePersonalLoanMonthlyPayment(
  * @returns An object containing the total payment and total interest.
  * @throws Error if any parameter is invalid.
  */
+
 export function calculatePersonalLoanDetails(
   principal: number,
   annualRate: number,
