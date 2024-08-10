@@ -1,6 +1,6 @@
 {
   "name": "calcit",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "Your go-to advanced calculators package.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
