@@ -7,7 +7,7 @@
  * @returns The BMR value in calories per day.
  * @throws Error if any parameter is invalid.
  */
-export function BMR(
+export function calculateBMR(
   weight: number,
   height: number,
   age: number,
