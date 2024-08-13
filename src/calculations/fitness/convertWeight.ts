@@ -12,10 +12,10 @@ export function convertWeight(weight: number, unit: "kg" | "lb"): number {
 
   let convertedWeight: number;
 
-  if (unit === "kg") {
+  if (unit === "lb") {
     // Convert from kilograms to pounds
     convertedWeight = weight * 2.20462;
-  } else if (unit === "lb") {
+  } else if (unit === "kg") {
     // Convert from pounds to kilograms
     convertedWeight = weight / 2.20462;
   } else {
