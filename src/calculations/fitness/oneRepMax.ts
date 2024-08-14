@@ -6,7 +6,7 @@
  * @returns The estimated one rep max value for the specified exercise.
  * @throws Error if weight, reps, or exercise type is invalid.
  */
-export function calculateRepMax(
+export function calculateOneRepMax(
   weight: number,
   reps: number,
   exercise: "squat" | "deadlift" | "bench_press" | "generic" = "generic"
