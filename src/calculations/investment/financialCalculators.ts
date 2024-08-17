@@ -28,3 +28,29 @@ export function calculateEMI(
 
   return parseFloat(emi.toFixed(2));
 }
+
+/**
+ * Calculates the GST (Goods and Services Tax) amount and the total price including GST.
+ * @param originalPrice - The original price of the product or service.
+ * @param gstRate - The GST rate (in percentage).
+ * @returns An object containing the GST amount and the total price including GST.
+ * @throws Error if any parameter is invalid.
+ */
+export function calculateGST(
+  originalPrice: number,
+  gstRate: number
+): { gstAmount: number; totalPrice: number } {
+  if (originalPrice <= 0 || gstRate < 0) {
+    throw new Error(
+      "Original price must be greater than zero and GST rate must not be negative."
+    );
+  }
+
+  const gstAmount = (originalPrice * gstRate) / 100;
+  const totalPrice = originalPrice + gstAmount;
+
+  return {
+    gstAmount: parseFloat(gstAmount.toFixed(2)),
+    totalPrice: parseFloat(totalPrice.toFixed(2)),
+  };
+}
