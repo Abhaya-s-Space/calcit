@@ -1,5 +1,5 @@
 /**
- * Calculates the maturity amount of a Public Provident Fund (PPF).
+ * Calculates the maturity amount of the Public Provident Fund (PPF).
  * @param annualInvestment - The amount invested annually.
  * @param annualInterestRate - The annual interest rate (in percentage).
  * @param totalYears - The total duration of the PPF account in years (usually 15 years).
