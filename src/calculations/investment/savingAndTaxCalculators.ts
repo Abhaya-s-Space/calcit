@@ -87,6 +87,47 @@ export function calculateEPF(
 }
 
 /**
+ * Calculates the HRA (House Rent Allowance) exemption.
+ * @param basicSalary - The basic salary of the employee.
+ * @param hraReceived - The HRA received from the employer.
+ * @param rentPaid - The actual rent paid by the employee.
+ * @param isMetroCity - Boolean indicating if the employee lives in a metro city (e.g., Delhi, Mumbai, Kolkata, Chennai).
+ * @returns The HRA exemption amount.
+ * @throws Error if any parameter is invalid.
+ */
+export function calculateHRAExemption(
+  basicSalary: number,
+  hraReceived: number,
+  rentPaid: number,
+  isMetroCity: boolean
+): number {
+  if (basicSalary <= 0 || hraReceived <= 0 || rentPaid <= 0) {
+    throw new Error(
+      "Basic salary, HRA received, and rent paid must be greater than zero."
+    );
+  }
+
+  // Calculate 10% of basic salary
+  const tenPercentOfSalary = basicSalary * 0.1;
+
+  // Calculate 50% or 40% of basic salary based on metro or non-metro city
+  const salaryPercentage = isMetroCity ? 0.5 : 0.4;
+  const salaryPercentageAmount = basicSalary * salaryPercentage;
+
+  // Calculate the amount of rent paid minus 10% of basic salary
+  const rentMinusTenPercent = rentPaid - tenPercentOfSalary;
+
+  // The HRA exemption is the minimum of the following three amounts:
+  const hraExemption = Math.min(
+    hraReceived,
+    rentMinusTenPercent,
+    salaryPercentageAmount
+  );
+
+  return Math.max(0, hraExemption); // Ensure the exemption is not negative
+}
+
+/**
  * Calculates the income tax based on the taxable income using the old tax regime.
  * @param taxableIncome - The taxable income of the individual.
  * @returns The calculated income tax.
@@ -117,89 +158,96 @@ export function calculateIncomeTax(taxableIncome: number): number {
   return parseFloat(tax.toFixed(2));
 }
 
+interface TaxCalculation {
+  oldRegimeTax: number;
+  newRegimeTax: number;
+  recommendedRegime: string;
+}
+
 /**
- * Calculates the income tax considering various deductions and rebates.
- * @param grossIncome - The gross income of the individual.
- * @param deductions - An object containing various deductions such as 80C, 80D, HRA, etc.
- * @returns The calculated income tax after deductions.
- * @throws Error if any parameter is invalid.
+ * Calculates the tax liability under both old and new regimes and recommends the better option.
+ * @param grossIncome - The gross income before deductions.
+ * @param hraExemption - The HRA exemption amount (if applicable).
+ * @param section80CDeduction - The total deduction under Section 80C.
+ * @param section80DDeduction - The total deduction under Section 80D.
+ * @param otherDeductions - Other eligible deductions (e.g., home loan interest).
+ * @returns An object containing tax liabilities under both regimes and the recommended regime.
  */
 export function calculateAdvancedIncomeTax(
   grossIncome: number,
-  deductions: {
-    section80C?: number;
-    section80D?: number;
-    hraExemption?: number;
-    homeLoanInterest?: number;
-    npsContribution?: number;
-    standardDeduction?: number;
-    otherDeductions?: number;
-  } = {}
-): number {
-  if (grossIncome <= 0) {
-    throw new Error("Gross income must be greater than zero.");
-  }
+  hraExemption: number = 0,
+  section80CDeduction: number = 0,
+  section80DDeduction: number = 0,
+  otherDeductions: number = 0
+): TaxCalculation {
+  // Ensure deductions do not exceed limits
+  const maxSection80CDeduction = Math.min(section80CDeduction, 150000);
+  const maxSection80DDeduction = section80DDeduction;
 
-  // Default values for deductions
-  const defaultDeductions = {
-    section80C: 0,
-    section80D: 0,
-    hraExemption: 0,
-    homeLoanInterest: 0,
-    npsContribution: 0,
-    standardDeduction: 50000, // Standard deduction is ₹50,000
-    otherDeductions: 0,
-  };
-
-  // Merge default values with user input
-  const {
-    section80C,
-    section80D,
-    hraExemption,
-    homeLoanInterest,
-    npsContribution,
-    standardDeduction,
-    otherDeductions,
-  } = { ...defaultDeductions, ...deductions };
-
-  // Limit the maximum allowable deductions
-  const maxSection80C = Math.min(section80C, 150000); // Max ₹1,50,000 for 80C
-  const maxSection80D = Math.min(section80D, 75000); // Max ₹75,000 for 80D (depending on age)
-  const maxHRAExemption = Math.min(hraExemption, grossIncome * 0.4); // Limit HRA to 40% of gross income
-
-  // Calculate total deductions
+  // Calculate taxable income under old regime
   const totalDeductions =
-    maxSection80C +
-    maxSection80D +
-    maxHRAExemption +
-    homeLoanInterest +
-    npsContribution +
-    standardDeduction +
-    otherDeductions;
+    hraExemption +
+    maxSection80CDeduction +
+    maxSection80DDeduction +
+    otherDeductions +
+    50000; // including standard deduction
+  const taxableIncomeOldRegime = Math.max(0, grossIncome - totalDeductions);
 
-  // Calculate taxable income
-  const taxableIncome = grossIncome - totalDeductions;
-
-  if (taxableIncome <= 0) {
-    return 0; // No tax if taxable income is zero or negative
+  // Tax calculation under the old regime
+  let oldRegimeTax = 0;
+  if (taxableIncomeOldRegime > 1000000) {
+    oldRegimeTax += (taxableIncomeOldRegime - 1000000) * 0.3 + 112500;
+  } else if (taxableIncomeOldRegime > 500000) {
+    oldRegimeTax += (taxableIncomeOldRegime - 500000) * 0.2 + 12500;
+  } else if (taxableIncomeOldRegime > 250000) {
+    oldRegimeTax += (taxableIncomeOldRegime - 250000) * 0.05;
   }
 
-  // Calculate tax based on old tax regime
-  let tax = 0;
-
-  if (taxableIncome <= 250000) {
-    tax = 0;
-  } else if (taxableIncome > 250000 && taxableIncome <= 500000) {
-    tax = (taxableIncome - 250000) * 0.05;
-  } else if (taxableIncome > 500000 && taxableIncome <= 1000000) {
-    tax = 250000 * 0.05 + (taxableIncome - 500000) * 0.2;
-  } else {
-    tax = 250000 * 0.05 + 500000 * 0.2 + (taxableIncome - 1000000) * 0.3;
+  // Apply Section 87A rebate under old regime if applicable
+  if (taxableIncomeOldRegime <= 500000) {
+    oldRegimeTax = Math.max(0, oldRegimeTax - 12500);
   }
 
   // Add 4% cess on tax
-  const cess = tax * 0.04;
-  tax += cess;
+  const cess = oldRegimeTax * 0.04;
+  oldRegimeTax += cess;
+  oldRegimeTax = parseFloat(oldRegimeTax.toFixed(2));
 
-  return parseFloat(tax.toFixed(2));
+  // Tax calculation under the new regime (no deductions)
+  const taxableIncomeNewRegime = grossIncome;
+  let newRegimeTax = 0;
+  if (taxableIncomeNewRegime > 1500000) {
+    newRegimeTax += (taxableIncomeNewRegime - 1500000) * 0.3 + 187500;
+  } else if (taxableIncomeNewRegime > 1250000) {
+    newRegimeTax += (taxableIncomeNewRegime - 1250000) * 0.25 + 125000;
+  } else if (taxableIncomeNewRegime > 1000000) {
+    newRegimeTax += (taxableIncomeNewRegime - 1000000) * 0.2 + 75000;
+  } else if (taxableIncomeNewRegime > 750000) {
+    newRegimeTax += (taxableIncomeNewRegime - 750000) * 0.15 + 37500;
+  } else if (taxableIncomeNewRegime > 500000) {
+    newRegimeTax += (taxableIncomeNewRegime - 500000) * 0.1 + 12500;
+  } else if (taxableIncomeNewRegime > 250000) {
+    newRegimeTax += (taxableIncomeNewRegime - 250000) * 0.05;
+  }
+
+  // Apply Section 87A rebate under new regime if applicable
+  if (taxableIncomeNewRegime <= 500000) {
+    newRegimeTax = Math.max(0, newRegimeTax - 12500);
+  }
+
+  // Add 4% cess on tax
+  const newRegimecess = newRegimeTax * 0.04;
+  newRegimeTax += newRegimecess;
+
+  newRegimeTax = parseFloat(newRegimeTax.toFixed(2));
+
+  // Determine the better regime
+  const recommendedRegime =
+    oldRegimeTax <= newRegimeTax ? "Old Regime" : "New Regime";
+
+  return {
+    oldRegimeTax,
+    newRegimeTax,
+    recommendedRegime,
+  };
 }
