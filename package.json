@@ -14,8 +14,18 @@
   "keywords": [
     "calcit",
     "typescript",
-    "fintech"
+    "fintech",
+    "health",
+    "fitness",
+    "real-estate"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Abhaya-s-Space/calcit"
+  },
+  "bugs": {
+    "url": "https://github.com/Abhaya-s-Space/calcit/issues"
+  },
   "author": "calcit-admin",
   "license": "MIT",
   "devDependencies": {
