@@ -1,4 +1,3 @@
-export * from "./emi";
 export * from "./totalInterestPaid";
 export * from "./homeLoan";
 export * from "./personalLoan";
