@@ -1,4 +1,4 @@
-import { calculateEMI } from './emi';
+import { calculateEMI } from "../investment";
 
 /**
  * Calculates the total interest paid on a loan.
@@ -8,9 +8,13 @@ import { calculateEMI } from './emi';
  * @returns The total interest paid over the term of the loan.
  * @throws Error if any parameter is invalid.
  */
-export function calculateTotalInterestPaid(principal: number, rate: number, term: number): number {
+export function calculateTotalInterestPaid(
+  principal: number,
+  rate: number,
+  term: number
+): number {
   if (principal <= 0 || rate <= 0 || term <= 0) {
-    throw new Error('Principal, rate, and term must be greater than zero.');
+    throw new Error("Principal, rate, and term must be greater than zero.");
   }
 
   const emi = calculateEMI(principal, rate, term);
