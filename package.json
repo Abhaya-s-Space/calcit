@@ -1,6 +1,6 @@
 {
-  "name": "@calcit-admin/calcit",
-  "version": "1.0.0",
+  "name": "calc-it",
+  "version": "1.1.0",
   "description": "Your go-to advanced calculators package.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
