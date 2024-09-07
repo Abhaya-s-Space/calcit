@@ -1,6 +1,11 @@
 # Calcit
 
-![Calcit-it](./calcit-logo.png)
+<h1 align="center">
+	<br>
+	<img width="500" src="./calcit-logo.svg" alt="Calcit Logo"> 
+	<br>
+	<br>
+</h1>
 
 <p style="text-align: center; background-color: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; color: #15b7b9; font-weight: bold; font-size: 1.1rem; letter-spacing: 0.05rem;">
 Your go-to advanced calculators package.
