@@ -1,6 +1,6 @@
 {
-  "name": "calcit",
-  "version": "0.1.1",
+  "name": "calc-it",
+  "version": "1.1.7",
   "description": "Your go-to advanced calculators package.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -14,8 +14,18 @@
   "keywords": [
     "calcit",
     "typescript",
-    "fintech"
+    "fintech",
+    "health",
+    "fitness",
+    "real-estate"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Abhaya-s-Space/calcit"
+  },
+  "bugs": {
+    "url": "https://github.com/Abhaya-s-Space/calcit/issues"
+  },
   "author": "calcit-admin",
   "license": "MIT",
   "devDependencies": {
@@ -24,5 +34,8 @@
     "husky": "^8.0.3",
     "tsup": "^8.1.0",
     "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "axios": "^1.7.7"
   }
 }
