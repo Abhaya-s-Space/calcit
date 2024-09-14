@@ -43,7 +43,6 @@ export async function convertCryptoCurrency(
   amount: number,
   fromCurrency: string,
   toCurrency: string
-  //   name: string // Add name to use for filtering the correct currency in the response
 ) {
   const apiKey = COIN_MARKET_API_KEY;
 
@@ -60,18 +59,6 @@ export async function convertCryptoCurrency(
   }
 
   try {
-    // Log the parameters to ensure they're correctly set
-    console.log(
-      "Amount:",
-      amount,
-      "From:",
-      fromCurrency,
-      "To:",
-      toCurrency
-      //   "Name:",
-      //   name
-    );
-
     const response = await axios.get(
       "https://pro-api.coinmarketcap.com/v2/tools/price-conversion",
       {
